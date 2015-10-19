@@ -38,6 +38,7 @@
         border-radius: 5px;
       }
       .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+      .remark-code { font-size: 150%; }
       .remark-code-line-highlighted     { background-color: #373832; }
       .pull-left {
         float: left;
@@ -154,17 +155,61 @@ Recently, I got into Idris, which is pretty much Haskell with dependent types so
 
 Since many FP concepts tend to preclude bugs from occurring, and "Strategies for code correctness" is a highly requested topic for these All-Hands meetings, I would like to show you how some of these concepts work and when you might use them in your own programs.
 ---
+layout: false
+.left-column[
+### `map`, `filter`, and `fold`
+]
+.right-column[
+```ruby
+def sumOfEvenSquares(array)
+  sum = 0
+  for n in array
+    square = n * n
+    if square.even?
+      sum += square
+    end
+  end
+  sum
+end
+```
 
+```ruby
+def sumOfEvenSquares(array)
+  array
+    .map { |n| n * n }
+    .select { |n| n.even? }
+    .reduce(0) { |sum, n| sum + n }
+end
+```
+]
+
+???
+
+Here we have 2 correct implementations of a function which calculates the sum of the even squares of numbers in an array.
+
+The first takes an imperative approach, the second a functional one.
+
+- Less variables in scope (less cognitive load)
+- Isolated transformations (the blocks cannot affect each other)
+- Composability (returning just the even squares would be as simple as removing the `reduce` line)
+---
+.left-column[
+### `fold`, `map`, and `filter`
+### Algebraic data types
+]
+.right-column[
+asf
+]
+---
 - recursion schemes (fold, map, don't use for loops, specific moment at which I remember hating for loops in sigart)
+- composability (parsing vs regex, ParserAST.jj vs Parser.hs, conduit buffer vs TPL dataflow blocks, elastomer-query: regex vs parser combinators)
 - algebraic data types (pattern matching, elastomer-client bulk operation)
 - avoid nulls like the plague (use optionals)
 - immutable values
-- composability (parsing vs regex, ParserAST.jj vs Parser.hs, conduit buffer vs TPL dataflow blocks, elastomer-query: regex vs parser combinators)
-- purity
-  - explicit effects (state, IO, concurrency, mutation)
-  - separate pure/impure
-  - effects system for better APIs (guarantee that an API call doesn't perform an HTTP DELETE)
-
+- laziness
+- separate pure/impure (testing, equational reasoning)
+- explicit effects (state, IO, concurrency, mutation)
+- effects system for better APIs (guarantee that an API call doesn't perform an HTTP DELETE)
 ---
     </textarea>
     <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js"> </script>
