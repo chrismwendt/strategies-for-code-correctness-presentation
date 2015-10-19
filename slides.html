@@ -38,7 +38,7 @@
         border-radius: 5px;
       }
       .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
-      .remark-code { font-size: 150%; }
+      .remark-code { font-size: 120%; }
       .remark-code-line-highlighted     { background-color: #373832; }
       .pull-left {
         float: left;
@@ -117,6 +117,7 @@
         width: 75%;
         float: right;
         padding-top: 1em;
+        font-size: 125%;
       }
       .smaller img {
           width: 15%;
@@ -194,20 +195,33 @@ The first takes an imperative approach, the second a functional one.
 - Composability (returning just the even squares would be as simple as removing the `reduce` line)
 ---
 .left-column[
-### `fold`, `map`, and `filter`
-### Algebraic data types
+### `map`, `filter`, and `fold`
+### Pure functions
 ]
 .right-column[
-asf
+## Impure
+- IO `gets`, `File.write`, `HTTP::get`, `%x{rm -rf /}`
+- Nondeterminism `rand`, `Time.now`
+- `$global` variable modification
+
+## Pure
+- Math `+`, `cos`
+- Strings `split`, `MD5.hexdigest`
 ]
+
+???
+
+Avoid global mutable state
+
+equational reasoning
+
+testing
 ---
-- recursion schemes (fold, map, don't use for loops, specific moment at which I remember hating for loops in sigart)
 - composability (parsing vs regex, ParserAST.jj vs Parser.hs, conduit buffer vs TPL dataflow blocks, elastomer-query: regex vs parser combinators)
 - algebraic data types (pattern matching, elastomer-client bulk operation)
 - avoid nulls like the plague (use optionals)
 - immutable values
 - laziness
-- separate pure/impure (testing, equational reasoning)
 - explicit effects (state, IO, concurrency, mutation)
 - effects system for better APIs (guarantee that an API call doesn't perform an HTTP DELETE)
 ---
