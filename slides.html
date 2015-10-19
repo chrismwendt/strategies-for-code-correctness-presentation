@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="keywords" content="remark,remarkjs,markdown,slideshow,presentation" />
     <meta name="description" content="A simple, in-browser, markdown-driven slideshow tool." />
-    <title>Remark</title>
+    <title>Strategies for code correctness inspired by functional programming</title>
     <style>
       @import url(https://fonts.googleapis.com/css?family=Droid+Serif);
       @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
@@ -117,6 +117,10 @@
         float: right;
         padding-top: 1em;
       }
+      .smaller img {
+          width: 15%;
+          height: auto;
+      }
     </style>
   </head>
   <body>
@@ -128,9 +132,39 @@ class: center, middle
 
 ???
 
-"Strategies for code correctness" is a popular topic
+This talk could just as well have been titled "5 weird tricks that bugs don't want you to know about".
+---
+# Chris Wendt - @chrismwendt
 
-5 weird tricks that bugs don't want you to know about
+![](images/contributions.png)
+
+.smaller[![](images/repository-chart.png)] ![](images/haskell.png)
+
+![](images/idris.png)
+
+???
+
+I'm @chrismwendt and I'm on the Search team working on Elasticsearch infrastructure.
+
+I joined GitHub just 2 months ago, as evidenced by my contributions graph.
+
+I admire functional programming languages like Haskell. 15 of my 40 repos are Haskell projects (including a basic terminal version of the game "2048" and a fully functional MiniJava compiler).
+
+Recently, I got into Idris, which is pretty much Haskell with dependent types so that you can prove properties about your programs.
+
+Since many FP concepts tend to preclude bugs from occurring, and "Strategies for code correctness" is a highly requested topic for these All-Hands meetings, I would like to show you how some of these concepts work and when you might use them in your own programs.
+---
+
+- recursion schemes (fold, map, don't use for loops, specific moment at which I remember hating for loops in sigart)
+- algebraic data types (pattern matching, elastomer-client bulk operation)
+- avoid nulls like the plague (use optionals)
+- immutable values
+- composability (parsing vs regex, ParserAST.jj vs Parser.hs, conduit buffer vs TPL dataflow blocks, elastomer-query: regex vs parser combinators)
+- purity
+  - explicit effects (state, IO, concurrency, mutation)
+  - separate pure/impure
+  - effects system for better APIs (guarantee that an API call doesn't perform an HTTP DELETE)
+
 ---
     </textarea>
     <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js"> </script>
