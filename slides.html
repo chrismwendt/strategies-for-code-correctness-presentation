@@ -19,6 +19,11 @@
         font-weight: 400;
         margin-bottom: 0;
       }
+      .remark-slide-content {
+        padding-left: 2em;
+        padding-right: 2em;
+        padding-top: 0em;
+      }
       .remark-slide-content h1 { font-size: 3em; }
       .remark-slide-content h2 { font-size: 2em; }
       .remark-slide-content h3 { font-size: 1.6em; }
@@ -162,7 +167,7 @@ layout: false
 ]
 .right-column[
 ```ruby
-def sumOfEvenSquares(array)
+def sum_of_even_squares(array)
   sum = 0
   for n in array
     square = n * n
@@ -175,7 +180,7 @@ end
 ```
 
 ```ruby
-def sumOfEvenSquares(array)
+def sum_of_even_squares(array)
   array
     .map { |n| n * n }
     .select { |n| n.even? }
@@ -207,6 +212,41 @@ The first takes an imperative approach, the second a functional one.
 ## Pure
 - Math `+`, `cos`
 - Strings `split`, `MD5.hexdigest`
+]
+
+???
+
+Easier to test
+
+portable
+
+parallelizable
+---
+.left-column[
+### `map`, `filter`, and `fold`
+### Pure functions
+]
+.right-column[
+```ruby
+# TODO consider a round-robin example
+nums = []
+def multiply_rand_output()
+  puts(nums.map { |n| n * rand })
+end
+def handle_input()
+  nums = $stdin.readlines.map &:to_i
+  output()
+end
+```
+
+```ruby
+def x(nums, r)
+  nums.map { |n| n.to_i * r.rand() })
+end
+def handle_input()
+  puts($stdin.readlines)
+end
+```
 ]
 
 ???
