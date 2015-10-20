@@ -157,15 +157,11 @@ Since "strategies for code correctness" is a highly requested topic for these Al
 
 ???
 
-I'm @chrismwendt and I'm on the Search team working on Elasticsearch infrastructure.
+I'm @chrismwendt, and as evidenced by my contributions graph, I joined GitHub about 2 months ago.
 
-I joined GitHub just 2 months ago, as evidenced by my contributions graph.
+It's a sign that you like functional programming when almost half of your repos are Haskell projects, and it's a guarantee if any of them are in Idris, a language which takes its type system to the extreme with embeddable proofs.
 
-I admire functional programming languages like Haskell. 15 of my 40 repos are Haskell projects (including a basic terminal version of the game "2048" and a fully functional MiniJava compiler).
-
-Recently, I got into Idris, which is pretty much Haskell with dependent types so that you can prove properties about your programs.
----
-Functional programming word cloud
+Ok, now for some code examples.
 ---
 layout: false
 .left-column[
@@ -197,13 +193,20 @@ end
 
 ???
 
-Here we have 2 correct implementations of a function which calculates the sum of the even squares of numbers in an array.
+Here we have 2 implementations of a function which calculates the sum of the even squares of numbers in an array.
 
-The first takes an imperative approach, the second a functional one.
+The first takes an imperative approach, with the mutable variable `sum`, a `for` loop, and the addition statement guarded by an `if`.
 
-- Less variables in scope (less cognitive load)
-- Isolated transformations (the blocks cannot affect each other)
-- Composability (returning just the even squares would be as simple as removing the `reduce` line)
+The second takes a declarative approach by employing composability, lambdas, and the common array transformation functions `map`, `select`, and `reduce`.
+
+The functional version is:
+
+- More visually appealing with less nesting
+- Simpler because there are fewer variables in scope
+- Simpler because the scopes of the transformations are isolated from each other
+- Easier to modify (for example, returning just the even squares would be as simple as removing the `reduce` line)
+
+The functional version requires you to know about `map`, `select`, and `reduce`, but the benefit of making it easier to understand once you do is worth it because these functions are so common.
 ---
 .left-column[
 ### `map`, `filter`, and `fold`
