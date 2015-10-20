@@ -135,11 +135,17 @@
 layout: true
 class: center, middle
 ---
-# Strategies for code correctness inspired by functional programming 😸
+# Strategies for code correctness
+
+![](images/function.png)
+
+## Inspired by functional programming
 
 ???
 
-This talk could just as well have been titled "5 weird tricks that bugs don't want you to know about".
+Many concepts associated with functional programming (like pure functions, static typing, immutability, and limiting side effects) reduce the ability of different parts of a program to affect each other in unintended ways. Because of this, programs written in a functional style tend to be less prone to bugs.
+
+Since "strategies for code correctness" is a highly requested topic for these All-Hands meetings, I would like to show you some of these concepts and how you might use them in your own programs.
 ---
 # Chris Wendt - @chrismwendt
 
@@ -158,8 +164,8 @@ I joined GitHub just 2 months ago, as evidenced by my contributions graph.
 I admire functional programming languages like Haskell. 15 of my 40 repos are Haskell projects (including a basic terminal version of the game "2048" and a fully functional MiniJava compiler).
 
 Recently, I got into Idris, which is pretty much Haskell with dependent types so that you can prove properties about your programs.
-
-Since many FP concepts tend to preclude bugs from occurring, and "Strategies for code correctness" is a highly requested topic for these All-Hands meetings, I would like to show you how some of these concepts work and when you might use them in your own programs.
+---
+Functional programming word cloud
 ---
 layout: false
 .left-column[
@@ -228,8 +234,7 @@ parallelizable
 ]
 .right-column[
 ```ruby
-# TODO consider a round-robin example
-nums = []
+SERVERS = ['s1', 's2']
 def multiply_rand_output()
   puts(nums.map { |n| n * rand })
 end
