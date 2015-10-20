@@ -278,45 +278,64 @@ When you can, try to separate pure functions from impure code. Pure functions ar
 .left-column[
 ### `map`, `filter`, and `fold`
 ### Pure functions
+### Composition
 ]
 .right-column[
-```ruby
-SERVERS = ['s1', 's2']
-def multiply_rand_output()
-  puts(nums.map { |n| n * rand })
-end
-def handle_input()
-  nums = $stdin.readlines.map &:to_i
-  output()
-end
-```
-
-```ruby
-def x(nums, r)
-  nums.map { |n| n.to_i * r.rand() })
-end
-def handle_input()
-  puts($stdin.readlines)
-end
-```
+TODO composability (parsing vs regex, ParserAST.jj vs Parser.hs, conduit buffer vs TPL dataflow blocks, elastomer-query: regex vs parser combinators)
 ]
 
 ???
 
-Avoid global mutable state
 
-equational reasoning
 
-testing
 ---
-- composability (parsing vs regex, ParserAST.jj vs Parser.hs, conduit buffer vs TPL dataflow blocks, elastomer-query: regex vs parser combinators)
-- algebraic data types (pattern matching, elastomer-client bulk operation)
-- avoid nulls like the plague (use optionals)
-- immutable values
-- laziness
-- explicit effects (state, IO, concurrency, mutation)
-- effects system for better APIs (guarantee that an API call doesn't perform an HTTP DELETE)
+.left-column[
+### `map`, `filter`, and `fold`
+### Pure functions
+### Composition
+### Immutable values
+]
+.right-column[
+TODO immutable values
+]
+
+???
+
+
+
 ---
+.left-column[
+### `map`, `filter`, and `fold`
+### Pure functions
+### Composition
+### Immutable values
+### Lazy values
+]
+.right-column[
+TODO laziness
+]
+
+???
+
+
+
+
+---
+# Moar correctness with static types
+
+- ## Algebraic data types (no invalid representations of data)
+- ## Banish ubiquitous nulls (Optional only when you want it)
+- ## Limit effects in types (guarantee a file will be closed)
+
+.center[
+![](images/cat.gif)
+]
+
+???
+
+- Algebraic data types (to better model your data, avoiding invalid representations)
+- Banish ubiquitous nulls (the Optional type provides the same behavior, but only when you want it)
+- Limit effects in types (IO, state, concurrency, e.g. guarantee that an API call doesn't perform an HTTP DELETE, guarantee that a file will be closed)
     </textarea>
     <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js"> </script>
     <script>
