@@ -161,7 +161,7 @@ I'm @chrismwendt, and as evidenced by my contributions graph, I joined GitHub ab
 
 Haskell was my introduction to functional programming about 2 years ago, and now almost half of my projects are written in it. More recently, I've dabbled in Idris, a language in which you can embed proofs into your programs that get checked at compile time.
 
-Ok, now let's take a look at a few examples of how a functional programming style can be applied to Ruby.
+Ok, now let's take a look at a few examples of how a functional programming style can be applied to Ruby to reduce complexity and avoid bugs.
 ---
 layout: false
 .left-column[
@@ -249,11 +249,6 @@ The second implementation restricts all of the IO to the main method, cleanly ex
 ### Pure functions
 ]
 .right-column[
-## Impure
-- IO `gets`, `File.write`, `HTTP::get`, `%x{rm -rf /}`
-- Nondeterminism `rand`, `Time.now`
-- `$global` mutable state
-
 ## Pure
 - Math `+`, `cos`, `sqrt`
 - String operations `split`, `MD5.hexdigest`, `reverse`
@@ -263,11 +258,18 @@ assert(
   truncate_lines(2, ["s", "sbm"]) ==
   ["s", "sb"])
 ```
+
+## Impure
+- IO `gets`, `File.write`, `HTTP::get`, `%x{rm -rf /}`
+- Nondeterminism `rand`, `Time.now`
+- `$global` mutable state
 ]
 
 ???
 
-When you can, try to separate pure functions from impure code. Pure functions are:
+A pure function is one which returns the same value given the same arguments, and does not cause side effects. **Examples**
+
+When you can, try to separate pure functions from impure code because pure functions are:
 
 - Easier to test: call them and check the return value.
 
