@@ -165,7 +165,7 @@ Ok, now let's take a look at a few examples of how a functional programming styl
 ---
 layout: false
 .left-column[
-### `map`, `filter`, and `fold`
+### `map`, `select`, and `reduce`
 ]
 .right-column[
 ```ruby
@@ -209,7 +209,7 @@ The functional version is:
 The functional version requires you to know about `map`, `select`, and `reduce`, but the benefit of making it easier to understand once you do is worth it because these functions are so common.
 ---
 .left-column[
-### `map`, `filter`, and `fold`
+### `map`, `select`, and `reduce`
 ### Pure functions
 ]
 .right-column[
@@ -245,7 +245,7 @@ The first mixes IO with pure computation, and is unnecessarily difficult to test
 The second implementation restricts all of the IO to the main method, cleanly extracting out the pure computation as the `truncate_lines` method. This `truncate_lines` is **pure** because it returns the same value given the same arguments. Also, it truly is a function because it takes arguments.
 ---
 .left-column[
-### `map`, `filter`, and `fold`
+### `map`, `select`, and `reduce`
 ### Pure functions
 ]
 .right-column[
@@ -276,7 +276,7 @@ When you can, try to separate pure functions from impure code. Pure functions ar
 - Trivially parallelizable and their return values are cacheable.
 ---
 .left-column[
-### `map`, `filter`, and `fold`
+### `map`, `select`, and `reduce`
 ### Pure functions
 ### Composition
 ]
@@ -317,7 +317,7 @@ The old version is not composable, so it cannot be easily reused. For example, y
 The new version uses a parser expression library to define the parser. With this approach, the query parser is built up by starting with primitive parsers (like a literal string, or here a regex), and combining parsers together in various ways (like sequencing and alternation).
 ---
 .left-column[
-### `map`, `filter`, and `fold`
+### `map`, `select`, and `reduce`
 ### Pure functions
 ### Composition
 ### Immutable values
@@ -330,7 +330,7 @@ TODO immutable values
 
 ---
 .left-column[
-### `map`, `filter`, and `fold`
+### `map`, `select`, and `reduce`
 ### Pure functions
 ### Composition
 ### Immutable values
