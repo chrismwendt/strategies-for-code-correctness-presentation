@@ -310,7 +310,7 @@ end
 
 ???
 
-Now for a real-world example: parsing the query from the text in a search box on GitHub.
+Now for a real-world example: parsing the query from the text in a search box on GitHub. These examples were gleaned from real production code, and the new version is currently being developed.
 
 The old version parses a string as a query directly by scanning for matching regexes and appends them to an array until the end of string is reached.
 
@@ -325,11 +325,68 @@ The new version uses a parser expression library to define the parser. With this
 ### Immutable values
 ]
 .right-column[
-TODO immutable values
+```ruby
+def index(commit)
+  elasticsearch.index(commit)
+* log(hash)
+end
+
+def log(commit)
+  puts commit.keep_if { |k, v|
+    ['author', 'id'].include? k }
+end
+```
+
+```ruby
+def index(commit)
+* log(hash)
+  elasticsearch.index(commit)
+end
+
+# Now fields like 'commit_date' are
+# stripped out before indexing!
+```
 ]
 
 ???
 
+Say you're indexing commits into Elasticsearch and you notice that some of the documents are failing to be indexed, and they're not showing up in the logs because the index operation is throwing an exception.
+
+You decide to put the `log` statement first, but now fields like `commit_date` are not being indexed! What's wrong?
+
+`keep_if` mutates the commit in the `log` method. It doesn't look like a method that mutates its argument because it's not suffixed with `!`, but the name doesn't matter.
+
+In attempting to solve a bug, you've introduced another bug.
+
+Other rambling thoughts:
+
+Thread safety
+Parallelism
+Traditional object references conflate value with identity
+Java ConcurrentModificationException
+You KNOW what the value of `x` is in its entire scope
+Mutation is useful in some cases, VENN DIAGRAM IT
+Since mutation is the default, it's present way more often than it's useful
+mutability present
+mutability appropriate
+immutability used
+
+sum = 0
+sum += a[i]
+This is a lie, and renaming it to `sum_so_far` is weird "I thought you were returning me the SUM!?"
+
+Although you can't limit mutation in Ruby, you can limit its scope.
+
+DON'T STORE MUTABLE VALUES IN CLASS MEMBERS
+
+You can trivially pass an immutable value to another function and not have to worry about it mutating it.
+
+---
+.center[![](images/bugs.png)]
+
+???
+
+Maybe a situation like that was the inspiration for this popular tweet.
 ---
 # Moar correctness with static types
 
@@ -343,7 +400,11 @@ TODO immutable values
 
 ???
 
-- Algebraic data types (to better model your data, avoiding invalid representations)
+That was a whirlwind tour of what you can do to reduce the chance of bugs in your programs, without introducing a different language with static types.
+
+However, you can go much further with a type checker:
+
+- Algebraic data types can help model your data, avoiding invalid representations
 - Banish ubiquitous nulls (the Optional type provides the same behavior, but only when you want it)
 - Limit effects in types (IO, state, concurrency, e.g. guarantee that an API call doesn't perform an HTTP DELETE, guarantee that a file will be closed)
     </textarea>
