@@ -43,7 +43,7 @@
         border-radius: 5px;
       }
       .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
-      .remark-code { font-size: 120%; }
+      .remark-code { font-size: 110%; }
       .remark-code-line-highlighted     { background-color: #373832; }
       .pull-left {
         float: left;
@@ -121,7 +121,7 @@
       .right-column {
         width: 75%;
         float: right;
-        padding-top: 1em;
+        padding-top: 0.5em;
         font-size: 125%;
       }
       .smaller img {
@@ -273,7 +273,7 @@ When you can, try to separate pure functions from impure code. Pure functions ar
 
 - Portable since their only dependencies are their arguments, not the presence of a file, a database, or a web service.
 
-- Trivially parallelizable.
+- Trivially parallelizable and their return values are cacheable.
 ---
 .left-column[
 ### `map`, `filter`, and `fold`
@@ -281,13 +281,40 @@ When you can, try to separate pure functions from impure code. Pure functions ar
 ### Composition
 ]
 .right-column[
-TODO composability (parsing vs regex, ParserAST.jj vs Parser.hs, conduit buffer vs TPL dataflow blocks, elastomer-query: regex vs parser combinators)
+```ruby
+def parse_query(string)
+  filters = []
+  until scanner.eos?
+    if scanner.scan('([a-z]+):([a-z]+)')
+      filters << {
+        :key   => scanner[0],
+        :value => scanner[1] }
+    elsif ...
+  end
+  filters
+end
+```
+
+```ruby
+class QueryParser < Parslet::Parser
+  rule(:word) { match('[a-z]+') }
+  rule(:filter) { (word.as(:key) >>
+    word.as(:value)).as(:filter) }
+  rule(:query) { (filter | ...).repeat }
+  root(:query)
+end
+```
 ]
 
 ???
 
+Now for a real-world example: parsing the query from the text in a search box on GitHub.
 
+The old version parses a string as a query directly by scanning for matching regexes and appends them to an array until the end of string is reached.
 
+The old version is not composable, so it cannot be easily reused. For example, you couldn't implement nested filters (like and, or, not) by calling `parse_query` recursively.
+
+The new version uses a parser expression library to define the parser. With this approach, the query parser is built up by starting with primitive parsers (like a literal string, or here a regex), and combining parsers together in various ways (like sequencing and alternation).
 ---
 .left-column[
 ### `map`, `filter`, and `fold`
@@ -300,8 +327,6 @@ TODO immutable values
 ]
 
 ???
-
-
 
 ---
 .left-column[
