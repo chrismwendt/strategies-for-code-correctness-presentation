@@ -154,7 +154,7 @@ This was a highly requested topic from the last All-Hands meeting, and it also h
 
 So in this presentation, I would like to show you some examples of using functional concepts in Ruby, as well as give you a taste of what can be done in a statically typed language like Haskell.
 
-I hope these concepts will better equip you to avoid bugs in your own projects!
+I picked Ruby because that's what most of you are likely familiar with, and I hope these concepts will better equip you to avoid bugs in your own projects!
 ---
 # Chris Wendt - @chrismwendt - @github/search
 
@@ -172,21 +172,25 @@ I'm @chrismwendt, and just by looking at my contributions graph, you can probabl
 
 I have used Haskell to solve dozens of Project Euler problems and to write a version of 2048 game that runs in your terminal, but my biggest project to date was a compiler for a stripped-down version of Java. More recently, I've dabbled in Idris, a fascinating language in which you can embed proofs that get checked at compile time.
 
-Ok, now let's take a look at a few examples of how a functional programming style can be applied to Ruby to reduce complexity and avoid bugs.
+Ok, now let's take a look at 4 functional concepts through the lens of Ruby examples:
+
+- Array processing
+- Pure functions
+- Composition
+- Immutable values
 ---
 layout: false
 .left-column[
 ### `map`, `select`, and `reduce`
 ]
 .right-column[
+### Imperative compared to Functional array processing
 ```ruby
 def sum_of_even_squares(array)
   sum = 0
   for n in array
     square = n * n
-    if square.even?
-      sum += square
-    end
+    sum += square if square.even?
   end
   sum
 end
@@ -204,20 +208,22 @@ end
 
 ???
 
-Here we have 2 implementations of a function which calculates the sum of the even squares of numbers in an array.
+This example compares an array processing function written in an imperative style first, then in a functional style. "Imperative" just means that Ruby will execute each statement step-by-step.
 
-The first takes an imperative approach, with the mutable variable `sum`, a `for` loop, and the addition statement guarded by an `if`.
+This function takes an array of numbers and returns the sum of even squares.
 
-The second takes a declarative approach by employing composability, lambdas, and the common array transformation functions `map`, `select`, and `reduce`.
+The imperative style does so with a `sum` variable, a `for` loop, and an `if` statement.
 
-The functional version is:
+The functional style does so by composing `map`, `select`, and `reduce` together in a pipeline fashion.
 
-- More visually appealing with less nesting
-- Simpler because there are fewer variables in scope
-- Simpler because the scopes of the transformations are isolated from each other
-- Easier to modify (for example, returning just the even squares would be as simple as removing the `reduce` line)
+Although the functional style is already idiomatic Ruby (and that's great!), it's worth spelling out a few reasons why it's more likely to be correct and stay correct in the future:
+easier to understand, less prone to bugs, easier to modify
 
-The functional version requires you to know about `map`, `select`, and `reduce`, but the benefit of making it easier to understand once you do is worth it because these functions are so common.
+- A pipeline composed of small transformations is more intuitive than a custom sequence of steps
+- The transformation blocks are isolated from each other, which results in less interconnectedness. Just look at scope of `sum` in the imperative style - it pervades the entire function, despite really only representing a third of the processing!
+- It's much easier to modify. For example, returning just the even squares only requires the removal of the `reduce` line.
+
+Ok, next up is purity, the essence of functional programming.
 ---
 .left-column[
 ### `map`, `select`, and `reduce`
