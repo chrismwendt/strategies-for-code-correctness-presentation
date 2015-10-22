@@ -382,25 +382,23 @@ Mutation can happen anywhere in Ruby, so all you can do is try to avoid it so th
 
 Unfortunately, your attempt to fix a bug has introduced another bug.
 ---
-# Moar correctness with static types
+# More correctness with static types
 
-- ## Algebraic data types (no invalid representations of data)
-- ## Banish ubiquitous nulls (Optional only when you want it)
-- ## Limit effects in types (guarantee a file will be closed)
+- ## Banish null (`Optional` only when you want it)
+- ## Use algebraic data types (fewer invalid representations of data)
+- ## Limit effects in types (prevent a function from performing IO)
 
 .center[![](images/cat.gif)]
 
 ???
 
-Without static types, you can only go so far.
+You can get a lot of mileage out of best practices, tests, and good intentions, but we can go much further with a type checker:
 
-However, you can go much further with a type checker:
+- Banish null (it's not just a dream, the Optional type provides the same behavior, but only when you want it)
+- Limit the effects available to a function just by changing the type signature (IO, state, concurrency, concurrency, and nondeterminism can all be limited - for example you can guarantee that an API call doesn't perform an HTTP DELETE, or that a function closes all files that it opens)
+- Prevent invalid representations of data with algebraic data types
 
-- Algebraic data types can help you model your data, preventing invalid representations
-- Banish ubiquitous nulls (the Optional type provides the same behavior, but only when you want it)
-- Limit effects in types (IO, state, concurrency, e.g. guarantee that an API call doesn't perform an HTTP DELETE, guarantee that a file will be closed)
-
-I want to quickly show you guarantees that you can get with static types. Don't worry if you don't know how to read the Haskell-ish code, just try to follow along with the concepts.
+I want to quickly show you guarantees that you can get with static types. Don't worry if you don't know how to read the Haskell-ish code - the concepts are what matter.
 ---
 .left-column[
 ### Banish null
