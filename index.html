@@ -222,6 +222,33 @@ The functional version requires you to know about `map`, `select`, and `reduce`,
 ### Pure functions
 ]
 .right-column[
+## Pure
+- Math `+`, `cos`, `sqrt`
+- String operations `split`, `MD5.hexdigest`, `reverse`
+
+## Impure
+- IO `gets`, `File.write`, `HTTP::get`, `%x{rm -rf /}`
+- Nondeterminism `rand`, `Time.now`
+- `$global` mutable state
+]
+
+???
+
+A pure function is one which returns the same value given the same arguments, and does not cause side effects. **Examples**
+
+When you can, try to separate pure functions from impure code because pure functions are:
+
+- Easier to test: call them and check the return value.
+
+- Portable since their only dependencies are their arguments, not the presence of a file, a database, or a web service.
+
+- Trivially parallelizable and their return values are cacheable.
+---
+.left-column[
+### `map`, `select`, and `reduce`
+### Pure functions
+]
+.right-column[
 ```ruby
 def truncate_lines
   n = ARGV[0].to_i
@@ -251,37 +278,6 @@ Here we have 2 implementations of a program which truncates lines from `stdin` t
 The first mixes IO with pure computation, and is unnecessarily difficult to test because of that. You would have to run this program in a separate process to test it. `truncate_lines` is **impure** because it reads external state and performs side effects, namely reading from `ARGV` and `stdin`, and writing to `stdout`. Also, it's not a function because it doesn't take arguments. It's more appropriately called a "procedure", "subroutine", or "action".
 
 The second implementation restricts all of the IO to the main method, cleanly extracting out the pure computation as the `truncate_lines` method. This `truncate_lines` is **pure** because it returns the same value given the same arguments.
----
-.left-column[
-### `map`, `select`, and `reduce`
-### Pure functions
-]
-.right-column[
-## Pure
-- Math `+`, `cos`, `sqrt`
-- String operations `split`, `MD5.hexdigest`, `reverse`
-
-```ruby
-assert(truncate_lines(2, ["s", "sbm"]) == ["s", "sb"])
-```
-
-## Impure
-- IO `gets`, `File.write`, `HTTP::get`, `%x{rm -rf /}`
-- Nondeterminism `rand`, `Time.now`
-- `$global` mutable state
-]
-
-???
-
-A pure function is one which returns the same value given the same arguments, and does not cause side effects. **Examples**
-
-When you can, try to separate pure functions from impure code because pure functions are:
-
-- Easier to test: call them and check the return value.
-
-- Portable since their only dependencies are their arguments, not the presence of a file, a database, or a web service.
-
-- Trivially parallelizable and their return values are cacheable.
 ---
 .left-column[
 ### `map`, `select`, and `reduce`
