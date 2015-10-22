@@ -43,7 +43,7 @@
         border-radius: 5px;
       }
       .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
-      .remark-code { font-size: 110%; }
+      .remark-code { font-size: 120%; }
       .remark-code-line-highlighted     { background-color: #373832; }
       .pull-left {
         float: left;
@@ -157,7 +157,7 @@ Since "strategies for code correctness" is a highly requested topic for these Al
 
 ???
 
-I'm @chrismwendt, and as evidenced by my contributions graph, I joined GitHub about 2 months ago.
+I'm @chrismwendt, and as evidenced by my contributions graph, I joined GitHub about 2 months ago. I work with Tim Pease and Grant Rodgers on the Search team.
 
 Haskell was my introduction to functional programming about 2 years ago, and now almost half of my projects are written in it. More recently, I've dabbled in Idris, a language in which you can embed proofs into your programs that get checked at compile time.
 
@@ -216,9 +216,9 @@ The functional version requires you to know about `map`, `select`, and `reduce`,
 ```ruby
 def truncate_lines
   n = ARGV[0].to_i
-  puts($stdin.readlines
-    .map { |line| line[0...n] })
+  puts($stdin.readlines.map { |line| line[0...n] })
 end
+
 def main
   truncate_lines
 end
@@ -228,10 +228,9 @@ end
 def truncate_lines(n, lines)
   lines.map { |line| line[0...n] })
 end
+
 def main
-  puts(truncate_lines(
-    ARGV[0].to_i,
-    $stdin.readlines))
+  puts(truncate_lines(ARGV[0].to_i, $stdin.readlines))
 end
 ```
 ]
@@ -242,7 +241,7 @@ Here we have 2 implementations of a program which truncates lines from `stdin` t
 
 The first mixes IO with pure computation, and is unnecessarily difficult to test because of that. You would have to run this program in a separate process to test it. `truncate_lines` is **impure** because it reads external state and performs side effects, namely reading from `ARGV` and `stdin`, and writing to `stdout`. Also, it's not a function because it doesn't take arguments. It's more appropriately called a "procedure", "subroutine", or "action".
 
-The second implementation restricts all of the IO to the main method, cleanly extracting out the pure computation as the `truncate_lines` method. This `truncate_lines` is **pure** because it returns the same value given the same arguments. Also, it truly is a function because it takes arguments.
+The second implementation restricts all of the IO to the main method, cleanly extracting out the pure computation as the `truncate_lines` method. This `truncate_lines` is **pure** because it returns the same value given the same arguments.
 ---
 .left-column[
 ### `map`, `select`, and `reduce`
@@ -254,9 +253,7 @@ The second implementation restricts all of the IO to the main method, cleanly ex
 - String operations `split`, `MD5.hexdigest`, `reverse`
 
 ```ruby
-assert(
-  truncate_lines(2, ["s", "sbm"]) ==
-  ["s", "sb"])
+assert(truncate_lines(2, ["s", "sbm"]) == ["s", "sb"])
 ```
 
 ## Impure
@@ -328,7 +325,7 @@ The new version uses a parser expression library to define the parser. With this
 ```ruby
 def index(commit)
   elasticsearch.index(commit)
-* log(hash)
+* log(commit)
 end
 
 def log(commit)
@@ -339,7 +336,7 @@ end
 
 ```ruby
 def index(commit)
-* log(hash)
+* log(commit)
   elasticsearch.index(commit)
 end
 
@@ -407,10 +404,19 @@ However, you can go much further with a type checker:
 - Algebraic data types can help model your data, avoiding invalid representations
 - Banish ubiquitous nulls (the Optional type provides the same behavior, but only when you want it)
 - Limit effects in types (IO, state, concurrency, e.g. guarantee that an API call doesn't perform an HTTP DELETE, guarantee that a file will be closed)
+
+MORE SLIDES! show ADTs, explain nulls, and IO return type limits
+
+Feel free to talk to robrix or I
+
+Shout out to production plans that are going down this path of types
+
+Include links to LYAH and bitemyapp's guide to starting Haskell
     </textarea>
     <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js"> </script>
     <script>
       var slideshow = remark.create({
+          ratio: '16:9',
           highlightStyle: 'monokai',
           highlightLanguage: 'remark',
           highlightLines: true
