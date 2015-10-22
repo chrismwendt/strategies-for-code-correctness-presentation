@@ -320,7 +320,7 @@ end
 ```ruby
 class QueryParser < Parslet::Parser
   rule(:word) { match('[a-z]+') }
-  rule(:filter) { (word.as(:key) >>
+  rule(:filter) { (word.as(:key) >> str(':') >>
     word.as(:value)).as(:filter) }
   rule(:query) { (filter | ...).repeat }
   root(:query)
@@ -330,13 +330,17 @@ end
 
 ???
 
-Now for a real-world example: parsing the query from the text in a search box on GitHub. These examples were gleaned from real production code - the current version is on top and the new version is on the bottom.
+This example was gleaned from real production code which parses the queries that users enter in the GitHub search box. The current version is first and then comes the new version which uses composition to great effect.
 
-The current version parses a string as a query directly by scanning for matching regexes and appends them to an array until the end of string is reached.
+The current version scans for matching regexes and appends them to an array until the end of string is reached. The problem is that it can't be reused very easily. For example, you couldn't implement nested filters (like and, or, not) by calling itself recursively. In fact, that's the primary motivation for rewriting it.
 
-The current version is not composable, so it cannot be easily reused. For example, you couldn't implement nested filters (like and, or, not) by calling `parse_query` recursively.
+The new version uses a parser expression library to define the parser. With this approach, the query parser is built up by starting with primitive parsers and then composing them in various ways to build more sophisticated parsers.
 
-The new version uses a parser expression library to define the parser. With this approach, the query parser is built up by starting with primitive parsers and then combining them in various ways (like sequencing and alternation).
+Construction of the parser starts with a primitive rule, called `word`, which matches alphabetic characters. It then composes a `filter` rule out of the sequence: `word : word`. Finally, it composes a `query` rule out of the choice between `filter`, and other elided parsers which could in turn reuse the `query` rule.
+
+Composition leads to reusability, which leads to less code overall and less breeding ground for bugs.
+
+Next, we'll follow a hypothetical production incident and see how immutability could have avoided a bug.
 ---
 .left-column[
 ### `map`, `select`, and `reduce`
@@ -345,10 +349,12 @@ The new version uses a parser expression library to define the parser. With this
 ### Immutable values
 ]
 .right-column[
+### Hypothetical production code
+
 ```ruby
 def index(commit)
-  elasticsearch.index(commit)
-* log(commit)
+* elasticsearch.index(commit)
+  log(commit)
 end
 
 def log(commit)
@@ -356,35 +362,25 @@ def log(commit)
     ['author', 'id'].include? k }
 end
 ```
-
-```ruby
-def index(commit)
-* log(commit)
-  elasticsearch.index(commit)
-end
-
-# Now fields like 'commit_date' are
-# stripped out before indexing!
-```
 ]
 
 ???
 
-Say you're indexing commits into Elasticsearch and you notice that some of them are failing, and they're not showing up in the logs because that `elasticsearch.index(commit)` line is throwing an exception.
+Say you're indexing commits into Elasticsearch and you notice that some of them are failing, but they're not showing up in the logs.
 
-You decide to move the `log` statement up, but then you're surprised to find that the only fields that are being indexed are `author` and `id`! What went wrong?
+You quickly realize that it's because the highlighted `elasticsearch.index(commit)` line is throwing an exception, so you move the `log` statement up in order to inspect the documents for problems.
 
-It turns out that `keep_if` mutates the commit in the `log` method. It doesn't look like a method that mutates its argument because it's not suffixed with `!`, but the name doesn't matter.
+However, then you're surprised to find that some fields are no longer being indexed! What went wrong?
 
-It's best to avoid mutation so that the caller doesn't need to worry about the variable changing.
+It turns out that the `keep_if` method call in the `log` method mutates the commit before it's indexed. It doesn't look like a method that mutates its argument because it's not suffixed with `!`, but the name doesn't matter.
 
-So, in attempting to solve a bug, you've introduced another bug.
+Mutation can happen anywhere in Ruby, so all you can do is try to avoid it so that the caller doesn't need to worry about their variable changing.
 ---
 .center[![](images/bugs.png)]
 
 ???
 
-Maybe a situation like that was the inspiration for this popular tweet.
+Unfortunately, your attempt to fix a bug has introduced another bug.
 ---
 # Moar correctness with static types
 
