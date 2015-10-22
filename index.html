@@ -137,14 +137,14 @@
   <body>
     <textarea id="source">
 layout: true
-class: center, middle
+class: center, middle, inverse
 ---
 # Strategies for Code Correctness
-##Inspired by <span style="color:purple">Functional Frogramming</span>
+##Inspired by <span style="color:mediumpurple">Functional Frogramming</span>
 
 ![](images/function.png)
 
-##  <span style="color:blue">@chrismwendt</span> / GitHub Engineering All-Hands Meeting 2015-10-22
+##  <a href="http://www.github.com/chrismwendt">@chrismwendt</a> / GitHub Engineering All-Hands Meeting 2015-10-22
 
 ???
 
@@ -156,7 +156,9 @@ So in this presentation, I would like to show you some examples of using functio
 
 I picked Ruby because that's what most of you are likely familiar with, and I hope these concepts will better equip you to avoid bugs in your own projects!
 ---
-# Chris Wendt - @chrismwendt - @github/search
+layout: false
+class: center
+# Chris Wendt - <a href="http://www.github.com/chrismwendt">@chrismwendt</a> - @github/search
 
 ![](images/contributions.png)
 
@@ -503,14 +505,24 @@ In Haskell, you can tell whether or not a function performs IO **just by looking
 
 As long as the return type does not contain IO, the function cannot perform IO. It cannot delete all the files on your hard drive. It cannot make an HTTP request. It cannot even read an environment variable. Limit is power.
 ---
-# Learning Haskell
-# More approachable: Learn You a Haskell
+layout: true
+class: center, middle
+---
+# Learn You a Haskell
+
 .center[.smaller20[![](images/lyah.png)]]
 # More academic: https://github.com/bitemyapp/learnhaskell
 
 ???
 
 If you're interested in learning Haskell, the most approachable Haskell book is Learn You a Haskell, and a more academic route is @bitemyapp's guide.
+---
+class: inverse
+# Thanks for watching!
+
+# <a href="http://www.github.com/chrismwendt">@chrismwendt</a>
+
+???
 
 And of course, feel free to ask me any questions you might have.
     </textarea>
