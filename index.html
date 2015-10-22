@@ -223,7 +223,6 @@ The imperative style does so with a `sum` variable, a `for` loop, and an `if` st
 The functional style does so by composing `map`, `select`, and `reduce` together in a pipeline fashion.
 
 Although the functional style is already idiomatic Ruby (and that's great!), it's worth spelling out a few reasons why it's more likely to be correct and stay correct in the future:
-easier to understand, less prone to bugs, easier to modify
 
 - A pipeline composed of small transformations is more intuitive than a custom sequence of steps
 - The transformation blocks are isolated from each other, which results in less interconnectedness. Just look at scope of `sum` in the imperative style - it pervades the entire function, despite really only representing a third of the processing!
