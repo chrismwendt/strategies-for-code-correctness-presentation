@@ -395,8 +395,8 @@ Unfortunately, your attempt to fix a bug has introduced another bug.
 You can get a lot of mileage out of best practices, tests, and good intentions, but we can go much further with a type checker:
 
 - Banish null (it's not just a dream, the Optional type provides the same behavior, but only when you want it)
-- Limit the effects available to a function just by changing the type signature (IO, state, concurrency, concurrency, and nondeterminism can all be limited - for example you can guarantee that an API call doesn't perform an HTTP DELETE, or that a function closes all files that it opens)
 - Prevent invalid representations of data with algebraic data types
+- Limit the effects available to a function just by changing the type signature (IO, state, concurrency, concurrency, and nondeterminism can all be limited - for example you can guarantee that an API call doesn't perform an HTTP DELETE, or that a function closes all files that it opens)
 
 I want to quickly show you guarantees that you can get with static types. Don't worry if you don't know how to read the Haskell-ish code - the concepts are what matter.
 ---
@@ -404,13 +404,13 @@ I want to quickly show you guarantees that you can get with static types. Don't 
 ### Banish null
 ]
 .right-column[
-## 1. Eliminate the keyword ~~null~~
+## 1. Eliminate the ~~`null`~~ keyword
 ## 2. Introduce the type `Optional a`
 
 ```haskell
 data Optional a = None | Some a
 
-divide : Int -> Int -> Optional Int
+divide : Float -> Float -> Optional Float
 divide a 0 = None
 divide a b = Some (a / b)
 
@@ -430,7 +430,15 @@ The second step is to introduce the type `Optional a`.
 
 There is no step 3. Go straight to profit.
 
-The caller is forced to case split on `Optional`s.
+Joking aside, this is a massively important feature of Haskell. Why the toxic `null` keeps being planted into new languages escapes me.
+
+Anyway, you can read this as "an `Optional a` (like `Optional Int` or `Optional String`) is either `None` or `Some a`".
+
+The `Optional` type can be used to implement a safe division function. When the denominator is 0, it returns `None`, otherwise it calls the built-in division and returns `Some (a / b)`.
+
+This forces the caller to acknowledge the possibility of failure by requiring a case split on the `Optional Float` in order to extract the `Float` inside.
+
+`Optional` is an example of what's called an "algebraic" data type, which is a type composed of enums and tuples.
 ---
 .left-column[
 ### Banish null
