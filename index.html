@@ -128,6 +128,10 @@
           width: 15%;
           height: auto;
       }
+      .smaller20 img {
+          width: 20%;
+          height: auto;
+      }
     </style>
   </head>
   <body>
@@ -307,13 +311,13 @@ end
 
 ???
 
-Now for a real-world example: parsing the query from the text in a search box on GitHub. These examples were gleaned from real production code, and the new version is currently being developed.
+Now for a real-world example: parsing the query from the text in a search box on GitHub. These examples were gleaned from real production code - the current version is on top and the new version is on the bottom.
 
-The old version parses a string as a query directly by scanning for matching regexes and appends them to an array until the end of string is reached.
+The current version parses a string as a query directly by scanning for matching regexes and appends them to an array until the end of string is reached.
 
-The old version is not composable, so it cannot be easily reused. For example, you couldn't implement nested filters (like and, or, not) by calling `parse_query` recursively.
+The current version is not composable, so it cannot be easily reused. For example, you couldn't implement nested filters (like and, or, not) by calling `parse_query` recursively.
 
-The new version uses a parser expression library to define the parser. With this approach, the query parser is built up by starting with primitive parsers (like a literal string, or here a regex), and combining parsers together in various ways (like sequencing and alternation).
+The new version uses a parser expression library to define the parser. With this approach, the query parser is built up by starting with primitive parsers and then combining them in various ways (like sequencing and alternation).
 ---
 .left-column[
 ### `map`, `select`, and `reduce`
@@ -347,37 +351,15 @@ end
 
 ???
 
-Say you're indexing commits into Elasticsearch and you notice that some of the documents are failing to be indexed, and they're not showing up in the logs because the index operation is throwing an exception.
+Say you're indexing commits into Elasticsearch and you notice that some of them are failing, and they're not showing up in the logs because that `elasticsearch.index(commit)` line is throwing an exception.
 
-You decide to put the `log` statement first, but now fields like `commit_date` are not being indexed! What's wrong?
+You decide to move the `log` statement up, but then you're surprised to find that the only fields that are being indexed are `author` and `id`! What went wrong?
 
-`keep_if` mutates the commit in the `log` method. It doesn't look like a method that mutates its argument because it's not suffixed with `!`, but the name doesn't matter.
+It turns out that `keep_if` mutates the commit in the `log` method. It doesn't look like a method that mutates its argument because it's not suffixed with `!`, but the name doesn't matter.
 
-In attempting to solve a bug, you've introduced another bug.
+It's best to avoid mutation so that the caller doesn't need to worry about the variable changing.
 
-Other rambling thoughts:
-
-Thread safety
-Parallelism
-Traditional object references conflate value with identity
-Java ConcurrentModificationException
-You KNOW what the value of `x` is in its entire scope
-Mutation is useful in some cases, VENN DIAGRAM IT
-Since mutation is the default, it's present way more often than it's useful
-mutability present
-mutability appropriate
-immutability used
-
-sum = 0
-sum += a[i]
-This is a lie, and renaming it to `sum_so_far` is weird "I thought you were returning me the SUM!?"
-
-Although you can't limit mutation in Ruby, you can limit its scope.
-
-DON'T STORE MUTABLE VALUES IN CLASS MEMBERS
-
-You can trivially pass an immutable value to another function and not have to worry about it mutating it.
-
+So, in attempting to solve a bug, you've introduced another bug.
 ---
 .center[![](images/bugs.png)]
 
@@ -391,27 +373,118 @@ Maybe a situation like that was the inspiration for this popular tweet.
 - ## Banish ubiquitous nulls (Optional only when you want it)
 - ## Limit effects in types (guarantee a file will be closed)
 
-.center[
-![](images/cat.gif)
+.center[![](images/cat.gif)]
+
+???
+
+Without static types, you can only go so far.
+
+However, you can go much further with a type checker:
+
+- Algebraic data types can help you model your data, preventing invalid representations
+- Banish ubiquitous nulls (the Optional type provides the same behavior, but only when you want it)
+- Limit effects in types (IO, state, concurrency, e.g. guarantee that an API call doesn't perform an HTTP DELETE, guarantee that a file will be closed)
+
+I want to quickly show you guarantees that you can get with static types. Don't worry if you don't know how to read the Haskell-ish code, just try to follow along with the concepts.
+---
+.left-column[
+### Banish null
+]
+.right-column[
+## 1. Eliminate the keyword ~~null~~
+## 2. Introduce the type `Optional a`
+
+```haskell
+data Optional a = None | Some a
+
+divide : Int -> Int -> Optional Int
+divide a 0 = None
+divide a b = Some (a / b)
+
+case (divide 3 0) of
+  None -> "failed, due to division by 0"
+  Some x -> "succeeded"
+```
+
+## 4. PROFIT!!!
 ]
 
 ???
 
-That was a whirlwind tour of what you can do to reduce the chance of bugs in your programs, without introducing a different language with static types.
+The first step to banishing `null` is to completely eradicate it from your language.
 
-However, you can go much further with a type checker:
+The second step is to introduce the type `Optional a`.
 
-- Algebraic data types can help model your data, avoiding invalid representations
-- Banish ubiquitous nulls (the Optional type provides the same behavior, but only when you want it)
-- Limit effects in types (IO, state, concurrency, e.g. guarantee that an API call doesn't perform an HTTP DELETE, guarantee that a file will be closed)
+There is no step 3. Go straight to profit.
 
-MORE SLIDES! show ADTs, explain nulls, and IO return type limits
+The caller is forced to case split on `Optional`s.
+---
+.left-column[
+### Banish null
+### Algebraic data types
+]
+.right-column[
+```haskell
+data Shape = Circle Float
+           | NGon Int Float
+           | Text String
 
-Feel free to talk to robrix or I
+bad : Shape
+bad = Text 3 -- COMPILE ERROR
 
-Shout out to production plans that are going down this path of types
+radius : Shape -> Optional Float
+radius (Circle r) = Some r
+radius (NGon _ r) = Some r
+radius _          = None
+```
+]
 
-Include links to LYAH and bitemyapp's guide to starting Haskell
+???
+
+Compared to traditional OO classes, algebraic data types help prevent invalid representations of data without sacrificing ease of writing new functions for a type.
+
+You can read this as "A shape is either a circle with radius, ngon with side count and radius, or text with a string".
+
+Attempting to create a `Text 3` fails, and it's easy to add a new function `radius`.
+
+And it's still easy to write a new function `radius` which takes a shape and returns an `Optional Float` when the shape doesn't have a natural radius.
+---
+.left-column[
+### Banishing null
+### Algebraic data types
+### Limiting effects
+]
+.right-column[
+## These functions CANNOT perform IO!
+
+```haskell
+length : String -> Int
+first : List a -> Optional a
+```
+
+## These CAN
+```haskell
+getLine : IO String
+printLine : String -> IO ()
+```
+]
+
+???
+
+In Haskell, you can tell whether or not a function performs IO **just by looking at the return type**.
+
+As long as the return type does not contain IO, the function cannot delete all the files on your hard drive, or worse, upload them somewhere over the network.
+---
+# Learning Haskell
+# More approachable: Learn You a Haskell
+.center[.smaller20[![](images/lyah.png)]]
+# More academic: https://github.com/bitemyapp/learnhaskell
+
+???
+
+If you're interested in learning Haskell, the most approachable Haskell book is Learn You a Haskell, and a more academic route is @bitemyapp's guide.
+
+And of course, feel free to ask me any questions you might have.
     </textarea>
     <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js"> </script>
     <script>
