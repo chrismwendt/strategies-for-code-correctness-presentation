@@ -223,7 +223,7 @@ easier to understand, less prone to bugs, easier to modify
 - The transformation blocks are isolated from each other, which results in less interconnectedness. Just look at scope of `sum` in the imperative style - it pervades the entire function, despite really only representing a third of the processing!
 - It's much easier to modify. For example, returning just the even squares only requires the removal of the `reduce` line.
 
-Ok, next up is purity, the essence of functional programming.
+Ok, next up are pure functions, the essence of functional programming.
 ---
 .left-column[
 ### `map`, `select`, and `reduce`
@@ -242,31 +242,37 @@ Ok, next up is purity, the essence of functional programming.
 
 ???
 
-A pure function is one which returns the same value given the same arguments, and does not cause side effects. **Examples**
+What's a pure function? It's the mathematical kind of function: one which returns the same value given the same arguments, and does not cause side effects.
+
+Math and string manipulation functions are pure, while IO, nondeterminism, and global mutable state are impure.
+
+Telltale signs that a function is impure:
+
+- Does not accept arguments (then it's not even a function)
+- There is a reason to call it and ignore the return value: side effects (e.g. writing to a file)
 
 When you can, try to separate pure functions from impure code because pure functions are:
 
-- Easier to test: call them and check the return value.
-
-- Portable since their only dependencies are their arguments, not the presence of a file, a database, or a web service.
-
-- Trivially parallelizable and their return values are cacheable.
+- Easier to test: no setup necessary!
+- Portable since their only dependencies are their arguments, not the presence of a file, a database, or a web service
+- Parallelizable
+- Cacheable
 ---
 .left-column[
 ### `map`, `select`, and `reduce`
 ### Pure functions
 ]
 .right-column[
+### Impure
+
 ```ruby
 def truncate_lines
   n = ARGV[0].to_i
   puts($stdin.readlines.map { |line| line[0...n] })
 end
-
-def main
-  truncate_lines
-end
 ```
+
+### Pure
 
 ```ruby
 def truncate_lines(n, lines)
@@ -281,11 +287,15 @@ end
 
 ???
 
-Here we have 2 implementations of a program which truncates lines from `stdin` to the length specified by a command line argument.
+Here's an example of extracting the pure part out of an impure method.
 
-The first mixes IO with pure computation, and is unnecessarily difficult to test because of that. You would have to run this program in a separate process to test it. `truncate_lines` is **impure** because it reads external state and performs side effects, namely reading from `ARGV` and `stdin`, and writing to `stdout`. Also, it's not a function because it doesn't take arguments. It's more appropriately called a "procedure", "subroutine", or "action".
+We start with an impure `truncate_lines` function which reads a number from the command line and truncates each line from `stdin` to that length.
 
-The second implementation restricts all of the IO to the main method, cleanly extracting out the pure computation as the `truncate_lines` method. This `truncate_lines` is **pure** because it returns the same value given the same arguments.
+Then we pass the values obtained from the impure functions `n` and `stdin` as parameters to the pure function.
+
+Now `truncate_lines` is easily testable and more reusable!
+
+Next, let's take a look at composition applied in a real-world example at GitHub.
 ---
 .left-column[
 ### `map`, `select`, and `reduce`
