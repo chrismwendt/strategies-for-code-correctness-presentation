@@ -490,7 +490,7 @@ radius : Shape -> Optional Float
 length : String -> Int
 ```
 
-# But these can
+## But these can
 ```haskell
 getLine : IO String
 printLine : String -> IO ()
@@ -501,7 +501,7 @@ printLine : String -> IO ()
 
 In Haskell, you can tell whether or not a function performs IO **just by looking at the return type**.
 
-As long as the return type does not contain IO, the function cannot delete all the files on your hard drive, or worse, upload them somewhere over the network.
+As long as the return type does not contain IO, the function cannot perform IO. It cannot delete all the files on your hard drive. It cannot make an HTTP request. It cannot even read an environment variable. Limit is power.
 ---
 # Learning Haskell
 # More approachable: Learn You a Haskell
