@@ -401,7 +401,7 @@ You can get a lot of mileage out of best practices, tests, and good intentions, 
 I want to quickly show you guarantees that you can get with static types. Don't worry if you don't know how to read the Haskell-ish code - the concepts are what matter.
 ---
 .left-column[
-### Banish null
+## Banish null
 ]
 .right-column[
 ## 1. Eliminate the ~~`null`~~ keyword
@@ -441,17 +441,20 @@ This forces the caller to acknowledge the possibility of failure by requiring a 
 `Optional` is an example of what's called an "algebraic" data type, which is a type composed of enums and tuples.
 ---
 .left-column[
-### Banish null
-### Algebraic data types
+## Banish null
+## Algebraic data types
 ]
 .right-column[
+## Representing geometric shapes
 ```haskell
+data Point = MakePoint Float Float
+
 data Shape = Circle Float
            | NGon Int Float
-           | Text String
+           | Polygon (List Point)
 
 bad : Shape
-bad = Text 3 -- COMPILE ERROR
+bad = Polygon 3 -- COMPILE ERROR
 
 radius : Shape -> Optional Float
 radius (Circle r) = Some r
@@ -462,28 +465,32 @@ radius _          = None
 
 ???
 
-Compared to traditional OO classes, algebraic data types help prevent invalid representations of data without sacrificing ease of writing new functions for a type.
+Just to give you a flavor for algebraic data types, here's an example of a `Shape`.
 
-You can read this as "A shape is either a circle with radius, ngon with side count and radius, or text with a string".
+You can read this as "A point is a pair of floats. A shape is either a circle with a radius, an ngon with a side count and a radius, or text containing a string". Algebraic data types allow us to wrap this all up in a single data type.
 
-Attempting to create a `Text 3` fails, and it's easy to add a new function `radius`.
+Compared to traditional OO classes, algebraic data types prevent invalid representations of data without sacrificing the ease of writing new functions that operate on those types.
 
-And it's still easy to write a new function `radius` which takes a shape and returns an `Optional Float` when the shape doesn't have a natural radius.
+`bad` is a `Shape`, and attempting to create a `Polygon 3` fails because 3 is an `Int`, not a list of `Point`s.
+
+And at the same time, it's easy to add a new function `radius`, which takes a shape and returns an `Optional Float` when the shape doesn't have what we consider to be a radius.
+
+Finally, we get to the most surprising property that you can enforce. You can prevent functions from performing IO by restricting their type. Let me repeat that: you can prevent functions from performing IO.
 ---
 .left-column[
-### Banishing null
-### Algebraic data types
-### Limiting effects
+## Banish null
+## Algebraic data types
+## Limiting effects
 ]
 .right-column[
 ## These functions CANNOT perform IO!
 
 ```haskell
+radius : Shape -> Optional Float
 length : String -> Int
-first : List a -> Optional a
 ```
 
-## These CAN
+# But these can
 ```haskell
 getLine : IO String
 printLine : String -> IO ()
