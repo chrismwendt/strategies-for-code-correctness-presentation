@@ -214,7 +214,7 @@ end
 
 ???
 
-This example compares an array processing function written in an imperative style first, then in a functional style. "Imperative" just means that Ruby will execute each statement step-by-step.
+This example shows an array processing function written in an imperative style first, then in a functional style. "Imperative" just means that Ruby will execute each statement step-by-step.
 
 This function takes an array of numbers and returns the sum of even squares.
 
@@ -385,7 +385,7 @@ Mutation can happen anywhere in Ruby, so all you can do is try to avoid it so th
 
 ???
 
-Unfortunately, your attempt to fix a bug has introduced another bug.
+Unfortunately, your attempt to fix a bug has just introduced yet another bug.
 ---
 # More correctness with static types
 
@@ -401,7 +401,7 @@ You can get a lot of mileage out of best practices, tests, and good intentions, 
 
 - Banish null (it's not just a dream, the Optional type provides the same behavior, but only when you want it)
 - Prevent invalid representations of data with algebraic data types
-- Limit the effects available to a function just by changing the type signature (IO, state, concurrency, concurrency, and nondeterminism can all be limited - for example you can guarantee that an API call doesn't perform an HTTP DELETE, or that a function closes all files that it opens)
+- Limit the effects available to a function just by changing the type signature (IO, state, concurrency, and nondeterminism can all be limited - for example you can guarantee that an API call doesn't perform an HTTP DELETE, or that a function closes all files that it opens)
 
 I want to quickly show you guarantees that you can get with static types. Don't worry if you don't know how to read the Haskell-ish code - the concepts are what matter.
 ---
@@ -472,15 +472,15 @@ radius _          = None
 
 Just to give you a flavor for algebraic data types, here's an example of a `Shape`.
 
-You can read this as "A point is a pair of floats. A shape is either a circle with a radius, an ngon with a side count and a radius, or text containing a string". Algebraic data types allow us to wrap this all up in a single data type.
+You can read this as "A point is a pair of floats. A shape is either a circle with a radius, an ngon with a side count and a radius, or a polygon of vertices". Algebraic data types allow us to wrap this all up in a single data type.
 
 Compared to traditional OO classes, algebraic data types prevent invalid representations of data without sacrificing the ease of writing new functions that operate on those types.
 
 `bad` is a `Shape`, and attempting to create a `Polygon 3` fails because 3 is an `Int`, not a list of `Point`s.
 
-And at the same time, it's easy to add a new function `radius`, which takes a shape and returns an `Optional Float` when the shape doesn't have what we consider to be a radius.
+And at the same time, it's easy to add a new function `radius`, which takes a shape and returns an `Optional Float` so that it can return `None` when the shape doesn't have what we consider to be a radius.
 
-Finally, we get to the most surprising property that you can enforce. You can prevent functions from performing IO by restricting their type. Let me repeat that: you can prevent functions from performing IO.
+Finally, we get to one of the more surprising properties that you can enforce. You can prevent functions from performing IO by restricting their type. Let me repeat that: you can prevent functions from performing IO by restricting their type.
 ---
 .left-column[
 ## Banish null
@@ -500,13 +500,20 @@ length : String -> Int
 getLine : IO String
 printLine : String -> IO ()
 ```
+
+## No function with this type signature exists
+```haskell
+IO a -> a
+```
 ]
 
 ???
 
 In Haskell, you can tell whether or not a function performs IO **just by looking at the return type**.
 
-As long as the return type does not contain IO, the function cannot perform IO. It cannot delete all the files on your hard drive. It cannot make an HTTP request. It cannot even read an environment variable. Limit is power.
+As long as the return type does not contain IO, the function cannot perform IO. It cannot delete all the files on your hard drive. It cannot make an HTTP request. It cannot even read an environment variable.
+
+There is no way to extract the value out of the IO action without getting right back into it.
 ---
 layout: true
 class: center, middle
@@ -518,7 +525,7 @@ class: center, middle
 
 ???
 
-If you're interested in learning Haskell, the most approachable Haskell book is Learn You a Haskell, and a more academic route is @bitemyapp's guide.
+If you're interested in learning Haskell, the most approachable book is Learn You a Haskell for Great Good, and a more academic route is @bitemyapp's guide.
 ---
 class: inverse
 
@@ -528,7 +535,7 @@ class: inverse
 
 ???
 
-And of course, feel free to ask me any questions you might have.
+Feel free to send me any questions you might have about functional programming or Haskell!
     </textarea>
     <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js"> </script>
     <script>
