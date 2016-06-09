@@ -1,6 +1,6 @@
 # Strategies for code correctness inspired by functional programming
 
-These are the slides for my presentation at GitHub's Engineering All-Hands meeting on 2015-10-22.
+This repo contains video and slides for my presentation at GitHub's Engineering All-Hands meeting on 2015-10-22.
 
 Video: https://www.youtube.com/watch?v=GlMX_tlisF8 or [presentation.mp4](presentation.mp4)
 
